@@ -1,0 +1,38 @@
+﻿    @using System.Activities.Statements
+    @using NET_MVC_Application.Models
+    
+    @{
+        ViewBag.Title = "Index";
+    }
+    @model TweakersRemake.Models.ProductViewModel
+    <h2>Index</h2>
+    
+    <div>
+       
+    
+           
+        
+        @foreach (Product p in Model.Products) { 
+             using (Html.BeginForm("Prijzen", "Product", FormMethod.Get))
+                  {
+
+
+                  <div>
+                      @{
+                          Product Pro = new Product();
+                          Pro = p;
+                      }
+                      @Html.Hidden("Id",Pro.Id)
+                      @Html.Hidden("Naam", Pro.Naam)
+                      @Html.Hidden("Categorie", Pro.Categorie)
+                      @Html.Label("Naam",Pro.Naam)
+                      @Html.Label("Categorie",Pro.Categorie)
+                      
+                      
+                      <button type="submit">Prijzen</button>
+                  </div>
+                  }
+    
+              }
+    </div>
+
