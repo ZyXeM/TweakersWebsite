@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Web;
+using TweakersRemake;
 
 namespace ASP.NET_MVC_Application.Models
 {
@@ -17,6 +18,26 @@ namespace ASP.NET_MVC_Application.Models
         public string ProfielNaam { get; set; }
         public DateTime Geregistreerd { get; set; }
         public DateTime Wijziging { get; set; }
+
+        public string Wachtwoord { get; set; }
+
+        public bool Isvalid()
+        {
+            if (Database.Isvalid(ProfielNaam, Wachtwoord))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool Register()
+        {
+            if (Database.RegisterAccount(this))
+            {
+                return true;
+            }
+            return false;
+        }
 
 
 

@@ -209,6 +209,72 @@ namespace TweakersRemake
 
         }
 
+        public static bool Isvalid(string profiel,string wacht)
+        {
+            string str = "Select * From Acca where Profielnaam = :Naam and Wachtwoord = :wacht";
+
+            if (Openconnecion())
+            {
+                //Checken of de gebruikersnaam en wachtwoord voorkomen in de database
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Naam", OracleDbType.Varchar2);
+                command.Parameters["Naam"].Value = profiel;
+                command.Parameters.Add("Wacht", OracleDbType.Varchar2);
+                command.Parameters["Wacht"].Value = wacht;
+                OracleDataReader Data = command.ExecuteReader();
+                if (Data.HasRows)
+                {
+                    return true;
+                }
+                return false;
+
+
+            }
+            return false;
+        }
+
+        public static bool RegisterAccount(Account A)
+        {
+            string str = "Insert into Acca Values(:id , :Naam , sysdate , :Geslacht , :Woonplaats , :Opleiding , :Profielnaam ,  Sysdate , Sysdate , :Wachtwoord )";
+            try
+            {
+                if (Openconnecion())
+                {
+                    //Checken of de gebruikersnaam en wachtwoord voorkomen in de database
+                    OracleCommand command = new OracleCommand(str);
+                    command.Connection = Conn;
+                    command.Parameters.Add("id", OracleDbType.Varchar2);
+                    command.Parameters["id"].Value = A.Id;
+                    command.Parameters.Add("Naam", OracleDbType.Varchar2);
+                    command.Parameters["Naam"].Value = A.Naam;
+                    command.Parameters.Add("Geslacht", OracleDbType.Varchar2);
+                    command.Parameters["Geslacht"].Value = A.Geslacht;
+                    command.Parameters.Add("Woonplaats", OracleDbType.Varchar2);
+                    command.Parameters["Woonplaats"].Value = A.Woonplaats;
+                    command.Parameters.Add("Opleiding", OracleDbType.Varchar2);
+                    command.Parameters["Opleiding"].Value = A.Opleiding;
+                    command.Parameters.Add("Profielnaam", OracleDbType.Varchar2);
+                    command.Parameters["Profielnaam"].Value = A.ProfielNaam;
+                    command.Parameters.Add("Wachtwoord", OracleDbType.Varchar2);
+                    command.Parameters["Wachtwoord"].Value = A.Wachtwoord;
+                    command.ExecuteNonQuery();
+
+                    return true;
+
+
+                }
+            }
+            catch (OracleException exception)
+            {
+                
+                return false;
+            }
+            
+
+            return false;
+        }
+
 
 
     }
