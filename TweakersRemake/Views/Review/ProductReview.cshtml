@@ -15,7 +15,7 @@
     @foreach (Preview p in Model.Reviews)
     { 
         
-        @p.Acc.Naam <br/>
+        @Html.ActionLink(@p.Acc.Naam,"Index","Acca",new {id = p.Acc.Id}, null)        <br />
         @p.Text
 
         for (int i = 0; i < p.Review.Length / 2; i++)

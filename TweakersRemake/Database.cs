@@ -135,7 +135,7 @@ namespace TweakersRemake
             List<Preview> list = new List<Preview>();
             string str = "Select a.id, p.Pluspunten,P.Minpunten,P.Prijs,P.Text,a.naam, c.* from Acca a join Product_Review P on a.id = P.Acca_Id join "+"Review_" + c + "Crit"+ " C on c.Review_id = p.id where P.Product_ID = :Id";
 
-            if (Openconnecion())
+            if (Openconnecion()&& id != 0)
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
@@ -175,6 +175,38 @@ namespace TweakersRemake
 
             }
             return list;
+        }
+
+        public static Account GetAccount(int id)
+        {
+            Account A = new Account();
+
+            string str = "Select * from Acca where id = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                    A.Id = Data.GetInt32(0);
+                    A.Naam = Data.GetString(1);
+                    A.GeboorteDatum = Data.GetDateTime(2);
+                    A.Geslacht = Data.GetString(3);
+                    A.Woonplaats = Data.GetString(4);
+                    A.Opleiding = Data.GetString(5);
+                    A.ProfielNaam = Data.GetString(6);
+                    A.Geregistreerd = Data.GetDateTime(7);
+                    
+
+                }
+
+            }
+            return A;
+
         }
 
 
