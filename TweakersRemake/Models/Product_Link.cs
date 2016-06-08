@@ -14,7 +14,7 @@ namespace ASP.NET_MVC_Application.Models
 
         public string Url { get; set; }
 
-        public string Levertijd { get; set; }
+        public int Levertijd { get; set; }
 
 
     }

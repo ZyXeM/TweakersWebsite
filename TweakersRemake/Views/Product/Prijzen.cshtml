@@ -7,23 +7,23 @@
 <h2>Prijzen</h2>
 
 <div>
-    @Html.HiddenFor(p => Model.Id)
-    @Html.DisplayFor(p => Model.Naam)
+   <strong>@Html.DisplayFor(p => Model.Naam)</strong> :
     @Html.DisplayFor(p => Model.Categorie)
 
 
 </div>
-<div
+<div>
      @foreach (Product_Link Pr in Model.Links)
      {
-         using (Html.BeginForm())
-         {
-
-             @Html.DisplayFor(m => Pr.Uitgever);
-              @Html.DisplayFor(m => Pr.Prijs);
-              @Html.DisplayFor(m => Pr.Levertijd);
-
-         }
+        <div>
+            using (Html.BeginForm())
+            {
+            @Html.HiddenFor(m => Pr.Uitgever.Id);
+            @Html.DisplayFor(m => Pr.Uitgever.Naam);<br />
+            @Html.DisplayFor(m => Pr.Prijs);<br />
+            @Html.DisplayFor(m => Pr.Levertijd);
+        </div>
      }
-></div>
+     }
+</div>
 

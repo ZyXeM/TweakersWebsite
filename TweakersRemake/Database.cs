@@ -94,22 +94,24 @@ namespace TweakersRemake
             //Op basis van de id van de producten, Alle gelinkte waardes uit de database halen
             List<Product_Link> list = new List<Product_Link>();
 
-            string str = "Select * From Product_Link where Product_Id = @Id";
+            string str = "Select Product_Id, Prijs,Url,Levertijd,Naam From Product_Link P, Uitgever U where Product_Id = :Id And U.Id = P.Product_Id" ;
             
             if (Openconnecion())
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
-                command.Parameters.Add("@Id", OracleDbType.Int16);
-                command.Parameters["@Id"].Value = id;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
               OracleDataReader Data = command.ExecuteReader();
                 while (Data.Read())
                 {
                     Product_Link Pr = new Product_Link();
+                    Pr.Uitgever = new Uitgever();
                     Pr.Uitgever.Id = Data.GetInt32(0);
-                    Pr.Prijs = Data.GetDouble(3);
-                    Pr.Url = Data.GetString(4);
-                    Pr.Levertijd = Data.GetString(5);
+                    Pr.Prijs = Data.GetFloat(1);
+                    Pr.Url = Data.GetString(2);
+                    Pr.Levertijd = Data.GetInt32(3);
+                    Pr.Uitgever.Naam = Data.GetString(4);
                     list.Add(Pr);
 
                 }
@@ -127,6 +129,38 @@ namespace TweakersRemake
 
 
         }
+
+        public static List<Preview> GetPreviews(string c, int id)
+        {
+            List<Preview> list = new List<Preview>();
+            string str = "Select a.id, p.Pluspunten,P.Minpunten,P.Prijs, c.* from Acca a join Product_Review P on a.id = P.Acca_Id join :Crit C on c.Review_id = p.id where P.Product_ID = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+
+                command.Parameters.Add("Crit", OracleDbType.Varchar2);
+                command.Parameters["Crit"].Value = "Review_"+c+"Crit";
+
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                   Preview Pr = new Preview();
+                    Pr.Acc = new Account();
+                    
+
+
+                    list.Add(Pr);
+
+                }
+
+            }
+            return list;
+        }
+
 
 
     }

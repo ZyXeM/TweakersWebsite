@@ -22,5 +22,13 @@ namespace ASP.NET_MVC_Application.Models
         {
             Links = Database.GetLinks(Id);
         }
+
+        public void FillReview()
+        {
+            Reviews = Database.GetPreviews(Categorie, Id);
+
+
+
+        }
     }
 }
