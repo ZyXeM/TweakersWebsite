@@ -19,7 +19,7 @@ namespace TweakersRemake.Controllers
         {
 
             Pr.FillReview();
-            return View();
+            return View(Pr);
         }
     }
 }

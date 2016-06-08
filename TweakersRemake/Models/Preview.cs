@@ -12,6 +12,12 @@ namespace ASP.NET_MVC_Application.Models
         
         public  int Prijs { get; set; }
 
+        public string Pluspunten { get; set; }
+
+        public string Minpunten { get; set; }
+
+        public string Text { get; set; }
+
         public string[,] Review { get; set; }
 
         public Account Acc { get; set; }

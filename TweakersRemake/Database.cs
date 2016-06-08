@@ -133,7 +133,7 @@ namespace TweakersRemake
         public static List<Preview> GetPreviews(string c, int id)
         {
             List<Preview> list = new List<Preview>();
-            string str = "Select a.id, p.Pluspunten,P.Minpunten,P.Prijs, c.* from Acca a join Product_Review P on a.id = P.Acca_Id join :Crit C on c.Review_id = p.id where P.Product_ID = :Id";
+            string str = "Select a.id, p.Pluspunten,P.Minpunten,P.Prijs,P.Text,a.naam, c.* from Acca a join Product_Review P on a.id = P.Acca_Id join "+"Review_" + c + "Crit"+ " C on c.Review_id = p.id where P.Product_ID = :Id";
 
             if (Openconnecion())
             {
@@ -142,14 +142,30 @@ namespace TweakersRemake
                 command.Parameters.Add("Id", OracleDbType.Int16);
                 command.Parameters["Id"].Value = id;
 
-                command.Parameters.Add("Crit", OracleDbType.Varchar2);
-                command.Parameters["Crit"].Value = "Review_"+c+"Crit";
+               // command.Parameters.Add("Crit", OracleDbType.Varchar2);
+              //  command.Parameters["Crit"].Value = "Review_"+c+"Crit";
 
                 OracleDataReader Data = command.ExecuteReader();
                 while (Data.Read())
                 {
                    Preview Pr = new Preview();
                     Pr.Acc = new Account();
+                    Pr.Acc.Id = Data.GetInt32(0);
+                    Pr.Pluspunten = Data.GetString(1);
+                    Pr.Minpunten = Data.GetString(2);
+                    Pr.Prijs = Data.GetInt32(3);
+                    Pr.Text = Data.GetString(4);
+                    Pr.Acc.Naam = Data.GetString(5);
+                    Pr.Review = new string[Data.FieldCount-5,2];
+                    
+                    //Omdat ik niet zeker weet hoeveel data er in zit 
+                    for (int i = 8; i < Data.FieldCount; i++)
+                    {
+                        Pr.Review[i - 8, 0] = Data.GetName(i);
+                        int k = Data.GetInt32(i);
+                        Pr.Review[i-8,1] =  k.ToString();
+                    }
+                    
                     
 
 

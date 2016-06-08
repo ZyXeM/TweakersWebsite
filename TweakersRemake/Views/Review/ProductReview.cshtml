@@ -5,3 +5,35 @@
 
 <h2>ProductReview</h2>
 
+@using NET_MVC_Application.Models
+@model NET_MVC_Application.Models.Product
+
+<div>
+
+     @Html.Display("Naam",Model.Naam)
+     @Html.Display("Categorie", Model.Categorie)<br/>
+    @foreach (Preview p in Model.Reviews)
+    { 
+        
+        @p.Acc.Naam <br/>
+        @p.Text
+
+        for (int i = 0; i < p.Review.Length / 2; i++)
+        {
+            <div>
+                
+               
+                @p.Review[i, 0] @p.Review[i, 1]
+
+
+            </div>
+
+         }
+    }
+
+
+
+
+
+</div>
+
