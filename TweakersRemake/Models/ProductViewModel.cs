@@ -9,5 +9,7 @@ namespace TweakersRemake.Models
     public class ProductViewModel
     {
         public List<Product> Products { get; set; }
+
+        public List<WenslijstViewModel> Wenslijst { get; set; }
     }
 }

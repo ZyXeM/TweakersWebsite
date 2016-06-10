@@ -8,6 +8,7 @@ using System.Web;
 using ASP.NET_MVC_Application.Models;
 using Oracle.ManagedDataAccess;
 using Oracle.ManagedDataAccess.Client;
+using TweakersRemake.Models;
 
 namespace TweakersRemake
 {
@@ -17,16 +18,16 @@ namespace TweakersRemake
 
         private static OracleConnection Conn;
 
-       static Database()
+        static Database()
         {
-           try
-           {
+            try
+            {
                 Conn = new OracleConnection(Connection);
-           }
-           catch (OracleException Ex)
-           {
-               throw;
-           }
+            }
+            catch (OracleException Ex)
+            {
+                throw;
+            }
         }
 
         public static bool Openconnecion()
@@ -65,14 +66,14 @@ namespace TweakersRemake
             //Dit is commentaar
 
         }
-
+#region Products
         public static List<Product> GetProducts()
         {
             List<Product> list = new List<Product>();
             string str = "Select * From Product";
             OracleDataReader Data = GetReader(str);
 
-            
+
             while (Data.Read())
             {
                 Product Pr = new Product();
@@ -81,11 +82,11 @@ namespace TweakersRemake
                 Pr.Categorie = Data.GetString(2);
                 Pr.Foto_Url = Data.GetString(3);
                 list.Add(Pr);
-                
+
             }
             Conn.Close();
             return list;
-            
+
 
         }
 
@@ -94,15 +95,16 @@ namespace TweakersRemake
             //Op basis van de id van de producten, Alle gelinkte waardes uit de database halen
             List<Product_Link> list = new List<Product_Link>();
 
-            string str = "Select Product_Id, Prijs,Url,Levertijd,Naam From Product_Link P, Uitgever U where Product_Id = :Id And U.Id = P.Product_Id" ;
-            
+            string str =
+                "Select Product_Id, Prijs,Url,Levertijd,Naam From Product_Link P, Uitgever U where Product_Id = :Id And U.Id = P.Product_Id";
+
             if (Openconnecion())
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
                 command.Parameters.Add("Id", OracleDbType.Int16);
                 command.Parameters["Id"].Value = id;
-              OracleDataReader Data = command.ExecuteReader();
+                OracleDataReader Data = command.ExecuteReader();
                 while (Data.Read())
                 {
                     Product_Link Pr = new Product_Link();
@@ -117,12 +119,12 @@ namespace TweakersRemake
                 }
 
             }
-           
+
             //Dit is commentaar
 
 
 
-          
+
             Conn.Close();
             return list;
 
@@ -133,22 +135,24 @@ namespace TweakersRemake
         public static List<Preview> GetPreviews(string c, int id)
         {
             List<Preview> list = new List<Preview>();
-            string str = "Select a.id, p.Pluspunten,P.Minpunten,P.Prijs,P.Text,a.naam, c.* from Acca a join Product_Review P on a.id = P.Acca_Id join "+"Review_" + c + "Crit"+ " C on c.Review_id = p.id where P.Product_ID = :Id";
-
-            if (Openconnecion()&& id != 0)
+            string str =
+                "Select a.id, p.Pluspunten,P.Minpunten,P.Prijs,P.Text,a.naam, c.* from Acca a join Product_Review P on a.id = P.Acca_Id join " +
+                "Review_" + c + "Crit" + " C on c.Review_id = p.id where P.Product_ID = :Id";
+            //Hier zet ik de table naam in de string zodat deze variable is
+            if (Openconnecion() && id != 0)
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
                 command.Parameters.Add("Id", OracleDbType.Int16);
                 command.Parameters["Id"].Value = id;
 
-               // command.Parameters.Add("Crit", OracleDbType.Varchar2);
-              //  command.Parameters["Crit"].Value = "Review_"+c+"Crit";
+                // command.Parameters.Add("Crit", OracleDbType.Varchar2);
+                //  command.Parameters["Crit"].Value = "Review_"+c+"Crit";
 
                 OracleDataReader Data = command.ExecuteReader();
                 while (Data.Read())
                 {
-                   Preview Pr = new Preview();
+                    Preview Pr = new Preview();
                     Pr.Acc = new Account();
                     Pr.Acc.Id = Data.GetInt32(0);
                     Pr.Pluspunten = Data.GetString(1);
@@ -156,17 +160,17 @@ namespace TweakersRemake
                     Pr.Prijs = Data.GetInt32(3);
                     Pr.Text = Data.GetString(4);
                     Pr.Acc.Naam = Data.GetString(5);
-                    Pr.Review = new string[Data.FieldCount-5,2];
-                    
+                    Pr.Review = new string[Data.FieldCount - 5, 2];
+
                     //Omdat ik niet zeker weet hoeveel data er in zit 
                     for (int i = 8; i < Data.FieldCount; i++)
                     {
                         Pr.Review[i - 8, 0] = Data.GetName(i);
                         int k = Data.GetInt32(i);
-                        Pr.Review[i-8,1] =  k.ToString();
+                        Pr.Review[i - 8, 1] = k.ToString();
                     }
-                    
-                    
+
+
 
 
                     list.Add(Pr);
@@ -177,10 +181,121 @@ namespace TweakersRemake
             return list;
         }
 
+        public static bool AddWishlist(string Profielnaam, string Naam)
+        {
+            string str = "Insert into Wenslijst values(:Id , :Account , :Naam )";
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = GetNextID("Wenslijst");
+                command.Parameters.Add("Account", OracleDbType.Int16);
+                command.Parameters["Account"].Value = GetAccountId(Profielnaam); //Ik heb de profielnaam vawege de authenticator dus gebruik ik deze methode
+                command.Parameters.Add("Naam", OracleDbType.Varchar2);
+                command.Parameters["Naam"].Value = Naam;
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            return false;
+        }
+
+        public static bool AddProductToWishlist(int Wenslijst, int Product)
+        {
+            string str = "Insert into Wenslijst_Product values(:Id , :IdP , 1 )";
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = Wenslijst;
+                command.Parameters.Add("IdP", OracleDbType.Int16);
+                command.Parameters["IdP"].Value = Product;
+
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            return false;
+        }
+
+        public static bool RemoveProductFromWishList(int Wenslijst, int Product)
+        {
+            string str = "Delete from Wenslijst_Product Where Wenslijst_ID = :id and Product_ID = :IdP";
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = Wenslijst;
+                command.Parameters.Add("IdP", OracleDbType.Int16);
+                command.Parameters["IdP"].Value = Product;
+
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            return false;
+        }
+
+        public static List<WenslijstViewModel> GetWenslijsten(string profielnaam)
+        {
+            List<WenslijstViewModel> list = new List<WenslijstViewModel>();
+            string str = "select * from wenslijst where Acca_ID = "+ GetAccountId(profielnaam);
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+
+               OracleDataReader Data =  command.ExecuteReader();
+                while (Data.Read())
+                {
+                   WenslijstViewModel w =  new WenslijstViewModel();
+                    w.ID = Data.GetInt32(0);
+                    w.Naam = Data.GetString(2);
+
+                    list.Add(w);
+                }
+            }
+            return list;
+
+
+        }
+
+        public static bool RemoveWishList(int id)
+        {
+            string str = "delete from Wenslijst_Product where Wenslijst_ID = "+ id;
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+
+                command.ExecuteNonQuery();
+            }
+           str = "delete from Wenslijst where ID = " + id;
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            return false;
+        }
+
+
+
+
+        #endregion
+
+#region Account
+
         public static Account GetAccount(int id)
         {
             Account A = new Account();
-
+            //Informatie over een account verkrijgen
             string str = "Select * from Acca where id = :Id";
 
             if (Openconnecion())
@@ -200,7 +315,7 @@ namespace TweakersRemake
                     A.Opleiding = Data.GetString(5);
                     A.ProfielNaam = Data.GetString(6);
                     A.Geregistreerd = Data.GetDateTime(7);
-                    
+
 
                 }
 
@@ -209,7 +324,35 @@ namespace TweakersRemake
 
         }
 
-        public static bool Isvalid(string profiel,string wacht)
+        public static int GetAccountId(string Naam)
+        {
+            int Nummer = 0;
+            //Informatie over een account verkrijgen
+            string str = "Select * from Acca where Profielnaam = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Varchar2);
+                command.Parameters["Id"].Value = Naam;
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                    Nummer = Data.GetInt32(0);
+                 
+
+
+                }
+
+            }
+
+            return Nummer;
+
+        }
+
+
+        public static bool Isvalid(string profiel, string wacht)
         {
             string str = "Select * From Acca where Profielnaam = :Naam and Wachtwoord = :wacht";
 
@@ -236,12 +379,15 @@ namespace TweakersRemake
 
         public static bool RegisterAccount(Account A)
         {
-            string str = "Insert into Acca Values(:id , :Naam , sysdate , :Geslacht , :Woonplaats , :Opleiding , :Profielnaam ,  Sysdate , Sysdate , :Wachtwoord )";
+
+            A.Id = GetNextID("Acca");
+            string str =
+                "Insert into Acca Values(:id , :Naam , sysdate , :Geslacht , :Woonplaats , :Opleiding , :Profielnaam ,  Sysdate , Sysdate , :Wachtwoord )";
             try
             {
                 if (Openconnecion())
                 {
-                    //Checken of de gebruikersnaam en wachtwoord voorkomen in de database
+                    
                     OracleCommand command = new OracleCommand(str);
                     command.Connection = Conn;
                     command.Parameters.Add("id", OracleDbType.Varchar2);
@@ -267,17 +413,101 @@ namespace TweakersRemake
             }
             catch (OracleException exception)
             {
-                
+
                 return false;
             }
-            
+
 
             return false;
         }
 
 
+#endregion
+        public static int GetNextID(string Table)
+        {
+            string str = "Select Max(ID) From " + Table;
+            if (Openconnecion())
+            {
+                try
+                {
+                    OracleCommand command = new OracleCommand(str);
+                    command.Connection = Conn;
+                    OracleDataReader Data = command.ExecuteReader();
+                    Data.Read();
+                    return Data.GetInt32(0) + 1;
+
+                }
+                catch (OracleException)
+                {
+
+                    return 1;
+                }
+
+
+
+            }
+            return 0;
+
+
+
+        }
+
+#region Posts 
+        public static List<Post> GetPosts(int id)
+        {
+            List<Post> post = new List<Post>();
+
+            string str = "Select p.*, A.Naam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                 Post p = new Post();
+                    p.Id = Data.GetInt32(0);
+                    p.Message = Data.GetString(1);
+                    p.Onderwerp = Data.GetString(3);
+                    p.PrePost = new Post();
+                    p.PrePost.Id = Data.GetInt32(4);
+                    p.Mappy = Data.GetInt32(5);
+                    p.From = new Account();
+                    p.From.Naam = Data.GetString(6);
+                    post.Add(p);
+
+                }
+
+            }
+            return post;
+
+        }
+
+        public static bool AddPosts(Post post)
+        {
+            
+
+            string str = "Select p.*, A.Naam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+                OracleDataReader Data = command.ExecuteReader();
+                return true;
+
+            }
+            return false;
+
+        }
+
+        #endregion
+
 
     }
-
-  
 }

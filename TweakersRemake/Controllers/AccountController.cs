@@ -4,12 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
+using System.Web.Routing;
 using System.Web.Security;
 using ASP.NET_MVC_Application.Models;
 
 namespace TweakersRemake.Controllers
 {
-    public class AccaController : Controller
+    public class AccountController : Controller
     {
         // GET: Acca
         public ActionResult Index(int id)
@@ -18,6 +19,13 @@ namespace TweakersRemake.Controllers
             A = Database.GetAccount(id);
             return View(A);
         }
+
+        public ActionResult Manage()
+        {
+            return View();
+        }
+
+       
 
         [HttpGet]
         public ActionResult Login()
@@ -34,6 +42,7 @@ namespace TweakersRemake.Controllers
                 if (A.Isvalid())
                 {//Checked in de database Of hij bestaat en vervolgens In de Authenticator gezet
                     FormsAuthentication.SetAuthCookie(A.ProfielNaam, true);
+                    return RedirectToAction("Index", "Home");
                 }
             }
             return View(A);
@@ -64,5 +73,8 @@ namespace TweakersRemake.Controllers
             
             return View(A);
         }
+
+      
     }
+   
 }

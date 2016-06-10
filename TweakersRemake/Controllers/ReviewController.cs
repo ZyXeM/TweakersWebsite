@@ -21,5 +21,29 @@ namespace TweakersRemake.Controllers
             Pr.FillReview();
             return View(Pr);
         }
+
+        [HttpPost]
+        public ActionResult AddReview(Preview Pr)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult AddReview()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddAReview(Aureview Au)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult AddAReview()
+        {
+            return View();
+        }
     }
 }

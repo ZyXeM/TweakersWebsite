@@ -15,16 +15,16 @@ namespace ASP.NET_MVC_Application.Models
 
         public string Message { get; set; }
 
+        public string Onderwerp { get; set; }
+
+        public int Mappy { get; set; }
+
         public void AddPost()
         {
             
         }
 
-        public void ModifyPost()
-        {
-            
-        }
-
+      
         public void ReactPost()
         {
             

@@ -199,7 +199,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Controllers\AccaController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ForumController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -220,6 +220,7 @@
     <Compile Include="Models\Product_Link.cs" />
     <Compile Include="Models\Specifications.cs" />
     <Compile Include="Models\Uitgever.cs" />
+    <Compile Include="Models\WenslijstViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -263,18 +264,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\SendCode.cshtml" />
-    <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
@@ -288,9 +277,17 @@
     <Content Include="Views\Review\Index.cshtml" />
     <Content Include="Views\Product\Prijzen.cshtml" />
     <Content Include="Views\Review\ProductReview.cshtml" />
-    <Content Include="Views\Acca\Index.cshtml" />
-    <Content Include="Views\Acca\Login.cshtml" />
-    <Content Include="Views\Acca\Register.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\Manage.cshtml" />
+    <Content Include="Views\Review\AddReview.cshtml" />
+    <Content Include="Views\Review\AddAReview.cshtml" />
+    <Content Include="Views\Forum\PostPost.cshtml" />
+    <Content Include="Views\Forum\GetMap.cshtml" />
+    <Content Include="Views\Forum\GetPosts.cshtml" />
+    <Content Include="Views\Product\AddWishList.cshtml" />
+    <Content Include="Views\Product\GetWishList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
