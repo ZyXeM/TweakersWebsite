@@ -4,4 +4,24 @@
 }
 
 <h2>GetMap</h2>
+@using TweakersRemake.Models
+@model List<TweakersRemake.Models.Mappy>
 
+<div>
+
+    @foreach (Mappy m in Model)
+    {
+        using (Html.BeginForm("GetPosts", "Forum", FormMethod.Get))
+        { 
+            @Html.Display(m.Naam)
+            @Html.ActionLink(m.Naam, "GetPosts",new {m.Id, m.Naam,m.Hoofdonderwerp })
+           
+            
+
+        }
+
+
+    }
+
+
+</div>

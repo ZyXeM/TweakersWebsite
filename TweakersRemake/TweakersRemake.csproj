@@ -213,6 +213,7 @@
     <Compile Include="Models\Bericht.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Mappy.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Preview.cs" />
     <Compile Include="Models\Product.cs" />
@@ -288,6 +289,7 @@
     <Content Include="Views\Forum\GetPosts.cshtml" />
     <Content Include="Views\Product\AddWishList.cshtml" />
     <Content Include="Views\Product\GetWishList.cshtml" />
+    <Content Include="Views\Forum\GetConversation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

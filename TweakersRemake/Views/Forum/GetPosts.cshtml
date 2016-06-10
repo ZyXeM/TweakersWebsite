@@ -4,4 +4,24 @@
 }
 
 <h2>GetPosts</h2>
+@using NET_MVC_Application.Models
+@model TweakersRemake.Models.Mappy
+<div>
+   
+  
 
+
+    @foreach (Post p in Model.posts)
+    {
+        <div>
+            @Html.ActionLink(p.Onderwerp, "GetConversation", new {p.Onderwerp})
+
+        </div>
+
+
+    }
+
+
+
+
+</div>

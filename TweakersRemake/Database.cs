@@ -181,6 +181,32 @@ namespace TweakersRemake
             return list;
         }
 
+        public static List<Product> GetProductsWenslijst(string Wenslijst, string Profielnaam)
+        {
+            List<Product> list = new List<Product>();
+            string str = "Select p.* from Acca a join wenslijst w on a.id = w.Acca_id join Wenslijst_product wp on w.ID = wp.Wenslijst_ID join Product p on wp.Product_id = p.id where w.naam = :naam and Acca_ID = :Acca";
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("naam", OracleDbType.Varchar2);
+                command.Parameters["naam"].Value = Wenslijst;
+                command.Parameters.Add("Acca", OracleDbType.Varchar2);
+                command.Parameters["Acca"].Value = GetAccountId(Profielnaam);
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                    Product Pr = new Product();
+                    Pr.Id = Data.GetInt32(0);
+                    Pr.Naam = Data.GetString(1);
+                    Pr.Categorie = Data.GetString(2);
+                    Pr.Foto_Url = Data.GetString(3);
+                    list.Add(Pr);
+                }
+
+            }
+            return list;
+        }
         public static bool AddWishlist(string Profielnaam, string Naam)
         {
             string str = "Insert into Wenslijst values(:Id , :Account , :Naam )";
@@ -201,23 +227,52 @@ namespace TweakersRemake
             return false;
         }
 
-        public static bool AddProductToWishlist(int Wenslijst, int Product)
+        public static bool CheckWenslijst(int Wenslijst, int Product)
         {
-            string str = "Insert into Wenslijst_Product values(:Id , :IdP , 1 )";
+            string str = "Select * From Wenslijst_Product where Product_ID = :p and Wenslijst_ID = :w ";
             if (Openconnecion())
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
-                command.Parameters.Add("Id", OracleDbType.Int16);
-                command.Parameters["Id"].Value = Wenslijst;
-                command.Parameters.Add("IdP", OracleDbType.Int16);
-                command.Parameters["IdP"].Value = Product;
+                command.Parameters.Add("p", OracleDbType.Int16);
+                command.Parameters["p"].Value = Product;
+                command.Parameters.Add("w", OracleDbType.Int16);
+                command.Parameters["w"].Value = Wenslijst;
+             OracleDataReader Data =   command.ExecuteReader();
+                if (Data.HasRows)
+                {
+                    return false;
+                }
+                
+
+                
+                
+            }
+            return true;
+
+        }
+
+        public static bool AddProductToWishlist(int Wenslijst, int Product)
+        {
+            if (CheckWenslijst(Wenslijst,Product))
+            {
+                string str = "Insert into Wenslijst_Product values(:Id , :IdP , 1 )";
+                if (Openconnecion())
+                {
+                    OracleCommand command = new OracleCommand(str);
+                    command.Connection = Conn;
+                    command.Parameters.Add("Id", OracleDbType.Int16);
+                    command.Parameters["Id"].Value = Wenslijst;
+                    command.Parameters.Add("IdP", OracleDbType.Int16);
+                    command.Parameters["IdP"].Value = Product;
 
 
-                command.ExecuteNonQuery();
-                return true;
+                    command.ExecuteNonQuery();
+                    return true;
+                }
             }
             return false;
+           
         }
 
         public static bool RemoveProductFromWishList(int Wenslijst, int Product)
@@ -252,7 +307,7 @@ namespace TweakersRemake
                 while (Data.Read())
                 {
                    WenslijstViewModel w =  new WenslijstViewModel();
-                    w.ID = Data.GetInt32(0);
+                    w.Id = Data.GetInt32(0);
                     w.Naam = Data.GetString(2);
 
                     list.Add(w);
@@ -457,7 +512,7 @@ namespace TweakersRemake
         {
             List<Post> post = new List<Post>();
 
-            string str = "Select p.*, A.Naam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id";
+            string str = "Select p.*, A.Naam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id and Post_ID is null";
 
             if (Openconnecion())
             {
@@ -473,7 +528,7 @@ namespace TweakersRemake
                     p.Message = Data.GetString(1);
                     p.Onderwerp = Data.GetString(3);
                     p.PrePost = new Post();
-                    p.PrePost.Id = Data.GetInt32(4);
+                   
                     p.Mappy = Data.GetInt32(5);
                     p.From = new Account();
                     p.From.Naam = Data.GetString(6);
@@ -485,19 +540,139 @@ namespace TweakersRemake
             return post;
 
         }
+        public static List<Mappy> GetMappy(string Hoofdonderwerp)
+        {
+            List<Mappy> post = new List<Mappy>();
 
-        public static bool AddPosts(Post post)
+            string str = "Select * From mappy where Hoofdonderwerp = :hoofd";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("hoofd", OracleDbType.Varchar2);
+                command.Parameters["hoofd"].Value = Hoofdonderwerp;
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                  Mappy m = new Mappy();
+                    m.Id = Data.GetInt32(0);
+                    m.Naam = Data.GetString(1);
+                    m.Hoofdonderwerp = Data.GetString(2);
+                    post.Add(m);
+
+                }
+
+            }
+            return post;
+
+        }
+
+        public static List<Post> GetChainPost(string Onderwerp)
+        {
+            List<Post> post = new List<Post>();
+
+            string str = "select p.*, A.Naam, A.ID  from post p left join post p2 on p.id = p2.post_id join Acca A on A.ID = P.Acca_ID where p.Onderwerp = :ond ";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("ond", OracleDbType.Varchar2);
+                command.Parameters["ond"].Value = Onderwerp;
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                    Account a = new Account();
+                    a.Naam = Data.GetString(6);
+                    a.Id = Data.GetInt32(7);
+                    Post p = new Post();
+                    p.Id = Data.GetInt32(0);
+                    p.Message = Data.GetString(1);
+                    p.Onderwerp = Data.GetString(3);
+                    p.PrePost = new Post();
+                   
+                    p.Mappy = Data.GetInt32(5);
+                    p.From = a;
+                    post.Add(p);
+
+                }
+
+            }
+            return post;
+
+        }
+
+        public static List<Post> GetMainPosts(int id)
+        {
+            List<Post> List = new List<Post>();
+            string str = "Select p.* from post p join Mappy M on p.Mappy_ID = M.ID where Post_ID is null and m.ID = :hoofd";
+
+            OracleCommand command = new OracleCommand(str);
+            command.Connection = Conn;
+            command.Parameters.Add("hoofd", OracleDbType.Varchar2);
+            command.Parameters["hoofd"].Value = id;
+            OracleDataReader Data = command.ExecuteReader();
+            while (Data.Read())
+            {
+                Post p = new Post();
+                p.Id = Data.GetInt32(0);
+                p.Onderwerp = Data.GetString(3);
+            }
+
+            return List;
+        }
+
+        public static bool AddPosts(Post post, string profielnaam)
         {
             
 
-            string str = "Select p.*, A.Naam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id";
+            string str = "Insert into Post Values(:id , :Bericht , :Acca , :Onderwerp , null , :Mappy)";
 
             if (Openconnecion())
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
                 command.Parameters.Add("Id", OracleDbType.Int16);
-                command.Parameters["Id"].Value = id;
+                command.Parameters["Id"].Value = post.Id;
+                command.Parameters.Add("Bericht", OracleDbType.Varchar2);
+                command.Parameters["Bericht"].Value = post.Message;
+                command.Parameters.Add("Acca", OracleDbType.Int16);
+                command.Parameters["Acca"].Value = GetAccountId(profielnaam);
+                command.Parameters.Add("Onderwerp", OracleDbType.Varchar2);
+                command.Parameters["Onderwerp"].Value = post.Onderwerp;
+                command.Parameters.Add("Mappy", OracleDbType.Int16);
+                command.Parameters["Mappy"].Value = post.Mappy;
+                OracleDataReader Data = command.ExecuteReader();
+                return true;
+
+            }
+            return false;
+
+        }
+
+        public static bool ReactPosts(Post post)
+        {
+
+
+            string str = "Insert into Post Values(:id , :Bericht , :Acca , :Onderwerp , :React , :Mappy)";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = post.Id;
+                command.Parameters.Add("Bericht", OracleDbType.Varchar2);
+                command.Parameters["Bericht"].Value = post.Message;
+                command.Parameters.Add("Acca", OracleDbType.Int16);
+                command.Parameters["Acca"].Value = post.From.Id;
+                command.Parameters.Add("Onderwerp", OracleDbType.Varchar2);
+                command.Parameters["Onderwerp"].Value = post.Onderwerp;
+                command.Parameters.Add("React", OracleDbType.Varchar2);
+                command.Parameters["React"].Value = post.PrePost.Id;
+                command.Parameters.Add("Mappy", OracleDbType.Int16);
+                command.Parameters["Mappy"].Value = post.Mappy;
                 OracleDataReader Data = command.ExecuteReader();
                 return true;
 

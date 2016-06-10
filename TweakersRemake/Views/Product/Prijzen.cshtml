@@ -16,14 +16,15 @@
      @foreach (Product_Link Pr in Model.Links)
      {
         <div>
-            using (Html.BeginForm())
+            @using (Html.BeginForm())
             {
-            @Html.HiddenFor(m => Pr.Uitgever.Id);
-            @Html.DisplayFor(m => Pr.Uitgever.Naam);<br />
-            @Html.DisplayFor(m => Pr.Prijs);<br />
-            @Html.DisplayFor(m => Pr.Levertijd);
+                @Html.HiddenFor(m => Pr.Uitgever.Id);
+                <div>Naam: </div> @Html.DisplayFor(m => Pr.Uitgever.Naam);<br />
+                <div>Prijs: </div> @Html.DisplayFor(m => Pr.Prijs);<br />
+                <div>Levertijd: </div> @Html.DisplayFor(m => Pr.Levertijd);
+
+            }
         </div>
-     }
      }
 </div>
 

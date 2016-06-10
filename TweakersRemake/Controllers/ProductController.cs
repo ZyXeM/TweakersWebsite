@@ -31,31 +31,50 @@ namespace TweakersRemake.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddToWishList(Product Pro)
+        public ActionResult AddToWishList(int Id, int Wens)
         {
-            return RedirectToAction("Prijzen");
+            WenslijstViewModel wens = new WenslijstViewModel();
+            wens.Id = Wens;
+            if (wens.AddProduct(Id))
+            {
+                return RedirectToAction("Index");
+            }
+           
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        public ActionResult AddWishList(WenslijstViewModel wens)
+        {
+            wens.AddWishList(User.Identity.Name);
+            return RedirectToAction("AddWishList", "Product");
         }
 
         public ActionResult AddWishList()
         {
-            return View();
+            List<WenslijstViewModel> list = new List<WenslijstViewModel>();
+           
+            list = Database.GetWenslijsten(User.Identity.Name);
+            return View(list);
         }
 
-        public ActionResult AddWishList(string Wenslijst)
+        [HttpPost]
+        public ActionResult RemoveWishList(int Wenslijst)
         {
-            return View();
-        }
-
-        public ActionResult RemoveWishList(string Wenslijst)
-        {
+            Database.RemoveWishList(Wenslijst);
             return RedirectToAction("AddWishList");
         }
 
         [HttpGet]
         public ActionResult GetWishList(string wenslijst)
         {
-            return View();
+            ProductViewModel p = new ProductViewModel();
+            p.Products = Database.GetProductsWenslijst(wenslijst, User.Identity.Name);
+            return View(p);
         }
+
+      
 
         [HttpPost]
         public ActionResult RemoveProduct(Product pr,string Wenslijst)

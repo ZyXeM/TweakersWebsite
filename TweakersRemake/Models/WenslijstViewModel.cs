@@ -9,7 +9,21 @@ namespace TweakersRemake.Models
     {
         public string Naam { get; set; }
 
-        public int ID { get; set; }
+        public int Id { get; set; }
+
+        public bool AddProduct(int Idp)
+        {
+            if (Database.AddProductToWishlist(Id, Idp))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddWishList(string Profielnaam)
+        {
+            return Database.AddWishlist(Profielnaam,Naam);
+        }
 
     }
 }

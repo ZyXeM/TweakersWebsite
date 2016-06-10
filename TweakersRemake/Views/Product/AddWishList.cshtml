@@ -4,4 +4,32 @@
 }
 
 <h2>AddWishList</h2>
+@using System.Data.Entity.Infrastructure
+@using TweakersRemake.Models
+@model List<TweakersRemake.Models.WenslijstViewModel>
+
+<div>
+  @foreach (WenslijstViewModel m in Model)
+  {
+      @Html.ActionLink(m.Naam,"GetWishList", new {wenslijst = m.Naam})
+
+
+      using (Html.BeginForm("RemoveWishList", "Product", FormMethod.Post))
+      {
+          @Html.Hidden("Wenslijst", m.Id)
+        <button type="Submit">Delete</button>
+
+      }
+      
+      
+  }
+    @using (Html.BeginForm("AddWishList", "Product", FormMethod.Post))
+    {
+       <div>Wenslijst Naam</div> @Html.TextBox("Naam")
+        <button type="submit">Maak Aan</button>
+
+    }
+   
+
+</div>
 

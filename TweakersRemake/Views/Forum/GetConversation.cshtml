@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "GetConversation";
+}
+@using NET_MVC_Application.Models
+@model  TweakersRemake.Models.Mappy
+<h2>GetConversation</h2>
+
+<div>
+    @if (Model.posts.Count != 0)
+    {
+        <strong>@Model.posts[0].Onderwerp</strong>
+    }
+
+    @foreach (Post p in Model.posts)
+    {
+        <div>
+            @Html.ActionLink(p.From.Naam, "Index", "Account", new {p.From.Id})<br/>
+            @p.Message
+        </div>
+    }
+
+    @using (Html.BeginForm("PostPost", "Forum", FormMethod.Post))
+    {
+        Model.posts.Reverse();
+        @Html.TextArea("Message")
+        @Html.Hidden("Prepost", Model.posts[0].Id)
+        <button type="submit">Post</button>
+    }
+
+
+</div>
+
