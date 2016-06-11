@@ -14,14 +14,27 @@
     @foreach (Post p in Model.posts)
     {
         <div>
-            @Html.ActionLink(p.Onderwerp, "GetConversation", new {p.Onderwerp})
+            @Html.ActionLink(p.Onderwerp, "GetConversation", new {p.Onderwerp, Model.Id})
 
         </div>
 
 
     }
+    <br/>
+    <div>
+        @using (Html.BeginForm("Post", "Forum", FormMethod.Post))
+        {
+
+            @Html.TextBox("Onderwerp")<br />
+            @Html.TextArea("Message")<br />
+            @Html.Hidden("Idee", Model.Id)
+            <button type="submit">Post</button>
+
+        }
+
+    </div>
 
 
 
 
-</div>
+    </div>

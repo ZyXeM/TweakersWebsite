@@ -40,20 +40,22 @@ namespace TweakersRemake.Controllers
 
 
         [HttpPost]
-        public ActionResult Post(Post p, int id)
+        public ActionResult Post(Post p,int Idee)
         {
-            p.Mappy = id;
+            p.Mappy = Idee;
             Database.AddPosts(p, User.Identity.Name);
-            return RedirectToAction("GetPosts", new {id});
+            return RedirectToAction("Index");
         }
 
       
 
         [HttpPost]
-        public ActionResult PostPost(Post P,int prepost)
+        public ActionResult PostPost(Post P,int prepost, int Mappy)
         {
+            P.Mappy = Mappy;
+            P.PrePost = new Post();
             P.PrePost.Id = prepost;
-            Database.ReactPosts(P);
+            Database.ReactPosts(P, User.Identity.Name);
             return View();
         }
 

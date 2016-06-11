@@ -634,7 +634,7 @@ namespace TweakersRemake
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
                 command.Parameters.Add("Id", OracleDbType.Int16);
-                command.Parameters["Id"].Value = post.Id;
+                command.Parameters["Id"].Value = GetNextID("Post");
                 command.Parameters.Add("Bericht", OracleDbType.Varchar2);
                 command.Parameters["Bericht"].Value = post.Message;
                 command.Parameters.Add("Acca", OracleDbType.Int16);
@@ -651,7 +651,7 @@ namespace TweakersRemake
 
         }
 
-        public static bool ReactPosts(Post post)
+        public static bool ReactPosts(Post post, string profielnaam)
         {
 
 
@@ -662,11 +662,11 @@ namespace TweakersRemake
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
                 command.Parameters.Add("Id", OracleDbType.Int16);
-                command.Parameters["Id"].Value = post.Id;
+                command.Parameters["Id"].Value = GetNextID("Post");
                 command.Parameters.Add("Bericht", OracleDbType.Varchar2);
                 command.Parameters["Bericht"].Value = post.Message;
                 command.Parameters.Add("Acca", OracleDbType.Int16);
-                command.Parameters["Acca"].Value = post.From.Id;
+                command.Parameters["Acca"].Value = GetAccountId(profielnaam);
                 command.Parameters.Add("Onderwerp", OracleDbType.Varchar2);
                 command.Parameters["Onderwerp"].Value = post.Onderwerp;
                 command.Parameters.Add("React", OracleDbType.Varchar2);

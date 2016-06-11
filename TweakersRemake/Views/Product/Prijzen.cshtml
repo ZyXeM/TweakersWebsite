@@ -18,10 +18,15 @@
         <div>
             @using (Html.BeginForm())
             {
-                @Html.HiddenFor(m => Pr.Uitgever.Id);
-                <div>Naam: </div> @Html.DisplayFor(m => Pr.Uitgever.Naam);<br />
-                <div>Prijs: </div> @Html.DisplayFor(m => Pr.Prijs);<br />
-                <div>Levertijd: </div> @Html.DisplayFor(m => Pr.Levertijd);
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @Html.HiddenFor(m => Pr.Uitgever.Id)
+                        <strong>Naam: </strong> @Html.DisplayFor(m => Pr.Uitgever.Naam)<br />
+                        <strong>Prijs: </strong> @Html.DisplayFor(m => Pr.Prijs)<br />
+                        <strong>Levertijd: </strong> @Html.DisplayFor(m => Pr.Levertijd)
+                    </div>
+                </div>
+              
 
             }
         </div>

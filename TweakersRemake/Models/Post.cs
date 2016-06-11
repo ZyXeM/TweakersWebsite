@@ -19,21 +19,7 @@ namespace ASP.NET_MVC_Application.Models
 
         public int Mappy { get; set; }
 
-        public void AddPost()
-        {
-            
-        }
-
       
-        public void ReactPost()
-        {
-            
-        }
-
-        public void DeletePost()
-        {
-            
-        }
 
 
 

@@ -16,7 +16,7 @@
                 foreach (var Wens in Model.Wenslijst)
                 {
 
-                    list.Add(new SelectListItem {Text = Wens.Naam, Value = Wens.Id.ToString()});
+                    list.Add(new SelectListItem { Text = Wens.Naam, Value = Wens.Id.ToString() });
 
                 }
             }
@@ -27,44 +27,49 @@
 
             foreach (Product p in Model.Products)
             {
-                using (Html.BeginForm("Prijzen", "Product", FormMethod.Get))
-                {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                       @using (Html.BeginForm("Prijzen", "Product", FormMethod.Get))
+                        {
 
 
 
 
-                    {
+                        {
                         Product Pro = new Product();
                         Pro = p;
 
-                         @Html.Hidden("Id", Pro.Id)
-                         @Html.Hidden("Naam", Pro.Naam)
-                         @Html.Hidden("Categorie", Pro.Categorie)
-                         @Html.Label("Naam", Pro.Naam)
-                         @Html.Label("Categorie", Pro.Categorie)
+                        @Html.Hidden("Id", Pro.Id)
+                        @Html.Hidden("Naam", Pro.Naam)
+                        @Html.Hidden("Categorie", Pro.Categorie)
+                        @Html.Label("Naam", Pro.Naam) <strong> : </strong>
+                        @Html.Label("Categorie", Pro.Categorie)
+                               <br/>
+                        <button type="submit">Prijzen</button>
 
-                         <button type="submit">Prijzen</button>
+                        }
 
-                     }
-
-                 }
-                 using (Html.BeginForm("ProductReview", "Review", FormMethod.Get))
-                 {
-                     @Html.Hidden("Id", p.Id)
-                     @Html.Hidden("Naam", p.Naam)
-                     @Html.Hidden("Categorie", p.Categorie)
-                     <button type="submit">Reviews</button>
-                }
-                if (Request.IsAuthenticated)
-                {
-                    using (Html.BeginForm("AddToWishList", "Product", FormMethod.Post))
-                    {
+                        }
+                        @using (Html.BeginForm("ProductReview", "Review", FormMethod.Get))
+                        {
                         @Html.Hidden("Id", p.Id)
-                         @Html.DropDownList("Wens", list);
+                        @Html.Hidden("Naam", p.Naam)
+                        @Html.Hidden("Categorie", p.Categorie)
+                        <button type="submit">Reviews</button>
+                        }
+                        @if (Request.IsAuthenticated)
+                        {
+                        using (Html.BeginForm("AddToWishList", "Product", FormMethod.Post))
+                        {
+                        @Html.Hidden("Id", p.Id)
+                        @Html.DropDownList("Wens", list);
                         <button type="submit">VoegToeg</button>
 
-                     }
-                 }
+                        }
+                        }
+                    </div>
+                </div>
+               
 
              }
         }
