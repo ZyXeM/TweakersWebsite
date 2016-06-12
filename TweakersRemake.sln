@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TweakersRemake", "TweakersRemake\TweakersRemake.csproj", "{38AFC046-6CFC-469F-88E0-291651CA6E70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TweakersRemakeTest", "TweakersRemakeTest\TweakersRemakeTest.csproj", "{62AE85E0-04AA-4B50-A203-9A04553E587A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{38AFC046-6CFC-469F-88E0-291651CA6E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38AFC046-6CFC-469F-88E0-291651CA6E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38AFC046-6CFC-469F-88E0-291651CA6E70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62AE85E0-04AA-4B50-A203-9A04553E587A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62AE85E0-04AA-4B50-A203-9A04553E587A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62AE85E0-04AA-4B50-A203-9A04553E587A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62AE85E0-04AA-4B50-A203-9A04553E587A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

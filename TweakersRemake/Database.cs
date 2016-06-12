@@ -207,6 +207,33 @@ namespace TweakersRemake
             }
             return list;
         }
+
+
+        public static List<Product> GetCompare(string Profielnaam)
+        {// Alle Producten die een persoon in zijn Vergelijkingslijst heeft staan
+            List<Product> list = new List<Product>();
+            string str = "Select p.* from Acca a join wenslijst w on a.id = w.Acca_id join Wenslijst_product wp on w.ID = wp.Wenslijst_ID join Product p on wp.Product_id = p.id where w.naam = :naam and Acca_ID = :Acca";
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+               
+                command.Parameters.Add("Acca", OracleDbType.Varchar2);
+                command.Parameters["Acca"].Value = GetAccountId(Profielnaam);
+                OracleDataReader Data = command.ExecuteReader();
+                while (Data.Read())
+                {
+                    Product Pr = new Product();
+                    Pr.Id = Data.GetInt32(0);
+                    Pr.Naam = Data.GetString(1);
+                    Pr.Categorie = Data.GetString(2);
+                    Pr.Foto_Url = Data.GetString(3);
+                    list.Add(Pr);
+                }
+
+            }
+            return list;
+        }
         public static bool AddWishlist(string Profielnaam, string Naam)
         {
             string str = "Insert into Wenslijst values(:Id , :Account , :Naam )";
@@ -226,6 +253,52 @@ namespace TweakersRemake
             }
             return false;
         }
+
+        public static bool AddToCompare(Product p, string profielnaam)
+        {
+            string str = "Insert into Vergelijking values(:Id , :Account )";
+            if (Openconnecion() && CheckCompare(p,profielnaam))
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = p.Id;
+                command.Parameters.Add("Account", OracleDbType.Int16);
+                command.Parameters["Account"].Value = GetAccountId(profielnaam); 
+               
+
+                command.ExecuteNonQuery();
+                return true;
+            }
+            return false;
+        }
+
+        public static bool CheckCompare(Product p, string profielnaam)
+        {
+            //Ik check of de 
+            string str = "select * from Vergelijking where Account_ID = :Account and Product_ID = :Id";
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = p.Id;
+                command.Parameters.Add("Account", OracleDbType.Int16);
+                command.Parameters["Account"].Value = GetAccountId(profielnaam);
+
+
+                OracleDataReader Data = command.ExecuteReader();
+                if (Data.HasRows)
+                {
+                    return false;
+                }
+            
+            
+            }
+            return true;
+        }
+
+
 
         public static bool CheckWenslijst(int Wenslijst, int Product)
         {
@@ -275,17 +348,20 @@ namespace TweakersRemake
            
         }
 
-        public static bool RemoveProductFromWishList(int Wenslijst, int Product)
+        public static bool RemoveProductFromWishList(string Wenslijst, int Product, string profielnaam)
         {
-            string str = "Delete from Wenslijst_Product Where Wenslijst_ID = :id and Product_ID = :IdP";
+            Conn.Close();
+            string str = "delete from Wenslijst_product wp where wp.Product_ID = :Idp and wp.Wenslijst_ID = (select w.id from wenslijst w where w.naam = :Lijstnaam and w.acca_id = :AccaId) ";
             if (Openconnecion())
             {
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
-                command.Parameters.Add("Id", OracleDbType.Int16);
-                command.Parameters["Id"].Value = Wenslijst;
                 command.Parameters.Add("IdP", OracleDbType.Int16);
                 command.Parameters["IdP"].Value = Product;
+                command.Parameters.Add("Lijstnaam", OracleDbType.Varchar2);
+                command.Parameters["Lijstnaam"].Value = Wenslijst;
+                command.Parameters.Add("AccaId", OracleDbType.Int16);
+                command.Parameters["AccaId"].Value = GetAccountId(profielnaam);
 
 
                 command.ExecuteNonQuery();
@@ -431,6 +507,29 @@ namespace TweakersRemake
             }
             return false;
         }
+        public static bool Isvalid(string profiel)
+        {
+            string str = "Select * From Acca where Profielnaam = :Naam";
+
+            if (Openconnecion())
+            {
+                //Checken of de gebruikersnaam en wachtwoord voorkomen in de database
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("Naam", OracleDbType.Varchar2);
+                command.Parameters["Naam"].Value = profiel;
+                
+                OracleDataReader Data = command.ExecuteReader();
+                if (Data.HasRows)
+                {
+                    return true;
+                }
+                return false;
+
+
+            }
+            return false;
+        }
 
         public static bool RegisterAccount(Account A)
         {
@@ -440,7 +539,7 @@ namespace TweakersRemake
                 "Insert into Acca Values(:id , :Naam , sysdate , :Geslacht , :Woonplaats , :Opleiding , :Profielnaam ,  Sysdate , Sysdate , :Wachtwoord )";
             try
             {
-                if (Openconnecion())
+                if (Openconnecion() && Database.Isvalid(A.ProfielNaam))
                 {
                     
                     OracleCommand command = new OracleCommand(str);
@@ -511,8 +610,8 @@ namespace TweakersRemake
         public static List<Post> GetPosts(int id)
         {
             List<Post> post = new List<Post>();
-
-            string str = "Select p.*, A.Naam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id and Post_ID is null";
+            // Dit zijn alle Beginpost van een bepaalde map
+            string str = "Select p.*, A.Naam, A.Profielnaam from Post p, Acca a where p.Acca_id = a.ID and Mappy_ID = :Id and Post_ID is null";
 
             if (Openconnecion())
             {
@@ -532,12 +631,147 @@ namespace TweakersRemake
                     p.Mappy = Data.GetInt32(5);
                     p.From = new Account();
                     p.From.Naam = Data.GetString(6);
+                    p.From.ProfielNaam = Data.GetString(7);
                     post.Add(p);
 
                 }
 
             }
             return post;
+
+        }
+        public static bool DeleteChainPost(int mappy, string Onderwerp)
+        {
+            List<Post> post = new List<Post>();
+            // Dit zijn alle Beginpost van een bepaalde map
+            string str = "delete from post p where p.onderwerp = :onderwerp and p.mappy_id = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+                command.Parameters.Add("onderwerp", OracleDbType.Varchar2);
+                command.Parameters["onderwerp"].Value = Onderwerp;
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = mappy;
+                try
+                {
+                    command.ExecuteNonQuery();
+
+                }
+                catch (Exception ex)
+                {
+                    
+                    throw;
+                }
+                
+
+                return true;
+            }
+            return false;
+
+        }
+        public static bool DeletePost(int id)
+        {
+            // Ik check eerst of de post een main post is, want anders moet alles verwijder worden in de post
+            if (CheckPost(id))
+            {
+                return true;
+            }
+
+            
+            // Dit zijn alle Beginpost van een bepaalde map
+            string str = "delete from post p where p.id = :Id";
+            string str2 = "update post p set p.post_id = :value where p.post_id = :id";
+
+            if (Openconnecion())
+            {
+               
+
+                OracleCommand command2 = new OracleCommand(str2);
+                command2.Connection = Conn;
+
+                command2.Parameters.Add("value", OracleDbType.Int16);
+                command2.Parameters["value"].Value = GetPrePost(id);
+                command2.Parameters.Add("id", OracleDbType.Int16);
+                command2.Parameters["id"].Value = id;
+                command2.ExecuteNonQuery();
+
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+                command.ExecuteNonQuery();
+
+
+
+
+
+
+                return true;
+            }
+            return false;
+
+        }
+
+        public static bool CheckPost(int id)
+        {
+            Post post = new Post();
+
+          
+            string str = "select * from post p where p.id = :Id and p.post_id is null";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+                OracleDataReader Data = command.ExecuteReader();
+                if (Data.HasRows)
+                {
+                    Data.Read();
+                    return DeleteChainPost(Data.GetInt32(5), Data.GetString(3));
+
+
+                }
+
+
+
+            }
+            return false;
+
+        }
+
+        public static int GetPrePost(int id)
+        {
+           
+
+
+            string str = "select p.post_id from post p where p.id = :Id";
+
+            if (Openconnecion())
+            {
+                OracleCommand command = new OracleCommand(str);
+                command.Connection = Conn;
+
+                command.Parameters.Add("Id", OracleDbType.Int16);
+                command.Parameters["Id"].Value = id;
+                OracleDataReader Data = command.ExecuteReader();
+                if (Data.HasRows)
+                {
+                    Data.Read();
+                    return Data.GetInt32(0);
+
+
+                }
+
+
+
+            }
+            return 0;
 
         }
         public static List<Mappy> GetMappy(string Hoofdonderwerp)
@@ -572,7 +806,7 @@ namespace TweakersRemake
         {
             List<Post> post = new List<Post>();
 
-            string str = "select p.*, A.Naam, A.ID  from post p left join post p2 on p.id = p2.post_id join Acca A on A.ID = P.Acca_ID where p.Onderwerp = :ond ";
+            string str = "select p.*, A.Naam, A.ID, A.Profielnaam  from post p left join post p2 on p.id = p2.post_id join Acca A on A.ID = P.Acca_ID where p.Onderwerp = :ond ";
 
             if (Openconnecion())
             {
@@ -586,6 +820,7 @@ namespace TweakersRemake
                     Account a = new Account();
                     a.Naam = Data.GetString(6);
                     a.Id = Data.GetInt32(7);
+                    a.ProfielNaam = Data.GetString(8);
                     Post p = new Post();
                     p.Id = Data.GetInt32(0);
                     p.Message = Data.GetString(1);

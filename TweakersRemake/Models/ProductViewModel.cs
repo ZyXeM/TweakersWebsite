@@ -11,5 +11,10 @@ namespace TweakersRemake.Models
         public List<Product> Products { get; set; }
 
         public List<WenslijstViewModel> Wenslijst { get; set; }
+
+        public void GetCompare(string profielnaam)
+        {
+           Products =  Database.GetCompare(profielnaam);
+        }
     }
 }

@@ -30,26 +30,22 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                        @using (Html.BeginForm("Prijzen", "Product", FormMethod.Get))
-                        {
+                       {
 
+                           Product Pro = new Product();
+                           Pro = p;
 
+                           @Html.Hidden("Id", Pro.Id)
+                           @Html.Hidden("Naam", Pro.Naam)
+                           @Html.Hidden("Categorie", Pro.Categorie)
+                           @Html.Label("Naam", Pro.Naam)
+                           <strong> : </strong>
+                           @Html.Label("Categorie", Pro.Categorie)
+                           <br/>
+                           <button type="submit">Prijzen</button>
+                       }
 
-
-                        {
-                        Product Pro = new Product();
-                        Pro = p;
-
-                        @Html.Hidden("Id", Pro.Id)
-                        @Html.Hidden("Naam", Pro.Naam)
-                        @Html.Hidden("Categorie", Pro.Categorie)
-                        @Html.Label("Naam", Pro.Naam) <strong> : </strong>
-                        @Html.Label("Categorie", Pro.Categorie)
-                               <br/>
-                        <button type="submit">Prijzen</button>
-
-                        }
-
-                        }
+                        
                         @using (Html.BeginForm("ProductReview", "Review", FormMethod.Get))
                         {
                         @Html.Hidden("Id", p.Id)
@@ -59,13 +55,22 @@
                         }
                         @if (Request.IsAuthenticated)
                         {
-                        using (Html.BeginForm("AddToWishList", "Product", FormMethod.Post))
-                        {
-                        @Html.Hidden("Id", p.Id)
-                        @Html.DropDownList("Wens", list);
-                        <button type="submit">VoegToeg</button>
+                            using (Html.BeginForm("AddToWishList", "Product", FormMethod.Post))
+                            {
+                                @Html.Hidden("Id", p.Id)
+                                @Html.DropDownList("Wens", list);
+                                <button type="submit">VoegToeg</button>
 
-                        }
+
+                            }
+                            using (Html.BeginForm("AddToCompare", "Product", FormMethod.Post))
+                            {
+
+                                @Html.Hidden("Id", p.Id)
+                                <button type="submit">Vergelijk</button>
+
+                            }
+
                         }
                     </div>
                 </div>

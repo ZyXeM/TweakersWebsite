@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TweakersRemake;
 
 namespace ASP.NET_MVC_Application.Models
 {
@@ -19,11 +20,30 @@ namespace ASP.NET_MVC_Application.Models
 
         public int Mappy { get; set; }
 
-      
+        public void AddPost( string profielnaam)
+        {
+            Database.AddPosts(this, profielnaam);
+        }
+
+        public void ReactPosts(string profielnaam)
+        {
+            Database.ReactPosts(this, profielnaam);
+        }
+
+        public bool DeleteChainPost(int Mappy)
+        {
+            return Database.DeleteChainPost(Mappy,Onderwerp);
+        }
+
+        public bool DeletePost()
+        {
+            return Database.DeletePost(Id);
+        }
+
+    }
 
 
 
 
 
     }
-}

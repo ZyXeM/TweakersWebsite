@@ -15,6 +15,16 @@
     {
         <div>
             @Html.ActionLink(p.Onderwerp, "GetConversation", new {p.Onderwerp, Model.Id})
+            @if (User.Identity.Name == p.From.ProfielNaam)
+            {
+                using (Html.BeginForm("DeleteChainPost", "Forum", FormMethod.Post))
+                 {
+                    @Html.Hidden("Id", Model.Id)
+                    @Html.Hidden("Onderwerp", p.Onderwerp)
+                     <button type="submit">Delete</button>
+
+                 }
+            }
 
         </div>
 

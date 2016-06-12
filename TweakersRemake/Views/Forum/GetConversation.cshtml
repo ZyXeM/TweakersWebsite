@@ -16,8 +16,18 @@
     @foreach (Post p in Model.posts)
     {
         <div>
-            @Html.ActionLink(p.From.Naam, "Index", "Account", new {p.From.Id})<br/>
+            @Html.ActionLink(p.From.Naam, "Index", "Account", new {p.From.Id},null)<br/>
             @p.Message
+            @if (User.Identity.Name == p.From.ProfielNaam)
+            {
+                using (Html.BeginForm("DeletePost", "Forum", FormMethod.Post))
+                {
+
+                    @Html.Hidden("idee", p.Id)
+                    <button type="submit">Delete</button>
+  
+                }
+            }
         </div>
     }
 
@@ -28,8 +38,13 @@
         if (Model != null)
         {
             @Html.Hidden("Mappy", Model.Id)
-            @Html.Hidden("Onderwerp", Model.posts[0].Onderwerp)
-            @Html.Hidden("Prepost", Model.posts[0].Id)
+           
+            if (Model.posts.Count != 0)
+            {
+               @Html.Hidden("Prepost", Model.posts[0].Id)
+               @Html.Hidden("Onderwerp", Model.posts[0].Onderwerp)
+            }
+
             <button type="submit">Post</button>
         }
     }

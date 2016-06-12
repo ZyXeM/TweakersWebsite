@@ -71,6 +71,8 @@ namespace TweakersRemake.Controllers
         {
             ProductViewModel p = new ProductViewModel();
             p.Products = Database.GetProductsWenslijst(wenslijst, User.Identity.Name);
+            p.Wenslijst = new List<WenslijstViewModel>();
+            p.Wenslijst.Add(new WenslijstViewModel {Naam = wenslijst});
             return View(p);
         }
 
@@ -79,8 +81,25 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult RemoveProduct(Product pr,string Wenslijst)
         {
-            return RedirectToAction("GetWishList",new {wenlijst = Wenslijst});
+            pr.RemoveProduct(User.Identity.Name, Wenslijst);
+            return RedirectToAction("GetWishList",new {Wenslijst});
         }
 
+
+        [HttpPost]
+        public ActionResult AddToCompare(Product p)
+        {
+            p.AddToCompare(User.Identity.Name);
+            return RedirectToAction("Index", "Product");
+        }
+
+        public ActionResult GetCompare()
+        {
+            List<ProductViewModel> p = new List<ProductViewModel>();
+            
+            return View(p);
+        }
+
+     
     }
 }

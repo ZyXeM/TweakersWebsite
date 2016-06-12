@@ -9,12 +9,12 @@ namespace ASP.NET_MVC_Application.Models
 {
     public class Product
     {
-        public  int Id { get; set; }
-        public string Naam  { get; set; }
-        public string  Categorie { get; set; }
+        public int Id { get; set; }
+        public string Naam { get; set; }
+        public string Categorie { get; set; }
         public string Foto_Url { get; set; }
 
-        public  List<Product_Link> Links { get; set; }
+        public List<Product_Link> Links { get; set; }
 
         public List<Preview> Reviews { get; set; }
 
@@ -30,5 +30,15 @@ namespace ASP.NET_MVC_Application.Models
 
 
         }
-    }
+
+        public bool AddToCompare(string profielnaam)
+        {
+            return Database.AddToCompare(this, profielnaam);
+        }
+
+        public bool RemoveProduct(string profielnaam, string Wenslijst)
+        {
+            return Database.RemoveProductFromWishList(Wenslijst, Id, profielnaam);
+        }
+}
 }

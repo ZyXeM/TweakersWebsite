@@ -43,7 +43,7 @@ namespace TweakersRemake.Controllers
         public ActionResult Post(Post p,int Idee)
         {
             p.Mappy = Idee;
-            Database.AddPosts(p, User.Identity.Name);
+            p.AddPost(User.Identity.Name);
             return RedirectToAction("Index");
         }
 
@@ -55,15 +55,28 @@ namespace TweakersRemake.Controllers
             P.Mappy = Mappy;
             P.PrePost = new Post();
             P.PrePost.Id = prepost;
-            Database.ReactPosts(P, User.Identity.Name);
-            return View();
+            P.ReactPosts(User.Identity.Name);
+            Models.Mappy m = new Mappy();
+            m.Id = P.Id;
+            return RedirectToAction("Index");
         }
 
 
 
         [HttpPost]
-        public ActionResult DeletePost()
+        public ActionResult DeletePost( int idee)
         {
+            // Ik krijg het unieke onderwerp van de layout plus de map waar hij in zit om alle Posts daarin te kunnen verwijdern De chains dus
+            Post p = new Post();
+            p.Id = idee;
+            p.DeletePost();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult DeleteChainPost(Mappy m, Post p)
+        {
+            p.DeleteChainPost(m.Id);
             return RedirectToAction("Index");
         }
     }
