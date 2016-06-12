@@ -683,7 +683,7 @@ namespace TweakersRemake
             // Dit zijn alle Beginpost van een bepaalde map
             string str = "delete from post p where p.id = :Id";
             string str2 = "update post p set p.post_id = :value where p.post_id = :id";
-
+            //Het is een chain van posts dus de tweede string is het aanpassen van de chain
             if (Openconnecion())
             {
                
@@ -719,7 +719,7 @@ namespace TweakersRemake
         {
             Post post = new Post();
 
-          
+          //Hier check ik of de Post een mainPost is of niet
             string str = "select * from post p where p.id = :Id and p.post_id is null";
 
             if (Openconnecion())
@@ -749,7 +749,7 @@ namespace TweakersRemake
         {
            
 
-
+            //geeft de int terug van de prepost van de te verwijderen om die toe te kennen aan de nieuwe in de reeks
             string str = "select p.post_id from post p where p.id = :Id";
 
             if (Openconnecion())
@@ -782,6 +782,7 @@ namespace TweakersRemake
 
             if (Openconnecion())
             {
+                //Alle mappies uit een bepaalde hoofdonderwerp
                 OracleCommand command = new OracleCommand(str);
                 command.Connection = Conn;
                 command.Parameters.Add("hoofd", OracleDbType.Varchar2);
@@ -804,6 +805,7 @@ namespace TweakersRemake
 
         public static List<Post> GetChainPost(string Onderwerp)
         {
+            //Alle posts Die in een conversatie zitten
             List<Post> post = new List<Post>();
 
             string str = "select p.*, A.Naam, A.ID, A.Profielnaam  from post p left join post p2 on p.id = p2.post_id join Acca A on A.ID = P.Acca_ID where p.Onderwerp = :ond ";
@@ -840,6 +842,7 @@ namespace TweakersRemake
 
         public static List<Post> GetMainPosts(int id)
         {
+            //Alle beginnende posts, dus die niet een antwoord zijn van een andere post
             List<Post> List = new List<Post>();
             string str = "Select p.* from post p join Mappy M on p.Mappy_ID = M.ID where Post_ID is null and m.ID = :hoofd";
 
@@ -861,7 +864,7 @@ namespace TweakersRemake
         public static bool AddPosts(Post post, string profielnaam)
         {
             
-
+            //Adding van een bepaalde post
             string str = "Insert into Post Values(:id , :Bericht , :Acca , :Onderwerp , null , :Mappy)";
 
             if (Openconnecion())
@@ -891,7 +894,7 @@ namespace TweakersRemake
 
 
             string str = "Insert into Post Values(:id , :Bericht , :Acca , :Onderwerp , :React , :Mappy)";
-
+            //Als reactie op een bepaalde post
             if (Openconnecion())
             {
                 OracleCommand command = new OracleCommand(str);

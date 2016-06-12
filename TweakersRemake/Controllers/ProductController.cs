@@ -33,6 +33,7 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult AddToWishList(int Id, int Wens)
         {
+            //Hier Add ik de product aan de wenslijst
             WenslijstViewModel wens = new WenslijstViewModel();
             wens.Id = Wens;
             if (wens.AddProduct(Id))
@@ -47,12 +48,14 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult AddWishList(WenslijstViewModel wens)
         {
+            //Wenslijst erbij
             wens.AddWishList(User.Identity.Name);
             return RedirectToAction("AddWishList", "Product");
         }
 
         public ActionResult AddWishList()
         {
+            //Get alle wenslijsten
             List<WenslijstViewModel> list = new List<WenslijstViewModel>();
            
             list = Database.GetWenslijsten(User.Identity.Name);
@@ -62,6 +65,7 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult RemoveWishList(int Wenslijst)
         {
+            //Wishlist Verwijderen
             Database.RemoveWishList(Wenslijst);
             return RedirectToAction("AddWishList");
         }
@@ -69,6 +73,7 @@ namespace TweakersRemake.Controllers
         [HttpGet]
         public ActionResult GetWishList(string wenslijst)
         {
+            //Wenslijst ophalen met de naam van een persoon en zijn wenslijst
             ProductViewModel p = new ProductViewModel();
             p.Products = Database.GetProductsWenslijst(wenslijst, User.Identity.Name);
             p.Wenslijst = new List<WenslijstViewModel>();
@@ -81,6 +86,7 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult RemoveProduct(Product pr,string Wenslijst)
         {
+            //Een enkele product verwijderen uit een wenslijst
             pr.RemoveProduct(User.Identity.Name, Wenslijst);
             return RedirectToAction("GetWishList",new {Wenslijst});
         }
@@ -89,12 +95,14 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult AddToCompare(Product p)
         {
+            //Toevoegen aan een lijst van comparisons
             p.AddToCompare(User.Identity.Name);
             return RedirectToAction("Index", "Product");
         }
 
         public ActionResult GetCompare()
         {
+            
             List<ProductViewModel> p = new List<ProductViewModel>();
             
             return View(p);

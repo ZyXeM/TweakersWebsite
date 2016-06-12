@@ -27,12 +27,14 @@ namespace TweakersRemake.Controllers
 
         public ActionResult GetPosts(Mappy mappy)
         {
+            //Vanuit de Getmap, alle begin posts verstrekken
             mappy.GetMainPost();
             return View(mappy);
         }
 
         public ActionResult GetConversation(Mappy mappy, string Onderwerp)
         {
+            //Vanuit de GetPosts, De hele conversatie verstrekken
             mappy.GetChainPost(Onderwerp);
             return View(mappy);
         }
@@ -42,6 +44,7 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult Post(Post p,int Idee)
         {
+            //In post binnen een mapje beginnen
             p.Mappy = Idee;
             p.AddPost(User.Identity.Name);
             return RedirectToAction("Index");
@@ -52,6 +55,7 @@ namespace TweakersRemake.Controllers
         [HttpPost]
         public ActionResult PostPost(Post P,int prepost, int Mappy)
         {
+            //Reageren op een post waar een andere post voor zit
             P.Mappy = Mappy;
             P.PrePost = new Post();
             P.PrePost.Id = prepost;
