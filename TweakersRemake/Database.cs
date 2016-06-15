@@ -14,10 +14,13 @@ namespace TweakersRemake
 {
     public static class Database
     {
-        private static string Connection = "Data Source=Localhost;User Id=system;Password=mmk55mmk100;";
+        private static string Connection = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=fhictora01.fhict.local)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=fhictora)));User ID=dbi323425;PASSWORD=mmk55mmk100;";
 
         private static OracleConnection Conn;
 
+        /// <summary>
+        /// Stelt de connectie in
+        /// </summary>
         static Database()
         {
             try
@@ -29,7 +32,10 @@ namespace TweakersRemake
                 throw;
             }
         }
-
+        /// <summary>
+        /// Checked of de database open is, zo niet dan wordt die geopend
+        /// </summary>
+        /// <returns>succes</returns>
         public static bool Openconnecion()
         {
             if (Conn.State == ConnectionState.Open)
@@ -52,7 +58,11 @@ namespace TweakersRemake
                 }
             }
         }
-
+        /// <summary>
+        /// Combineerd de connectie en de string tot een reader
+        /// </summary>
+        /// <param name="str">Sql string</param>
+        /// <returns></returns>
         public static OracleDataReader GetReader(string str)
         {
             if (Openconnecion())
@@ -67,6 +77,10 @@ namespace TweakersRemake
 
         }
 #region Products
+        /// <summary>
+        /// Alle producten in het systeem
+        /// </summary>
+        /// <returns>Lijst van producten</returns>
         public static List<Product> GetProducts()
         {
             List<Product> list = new List<Product>();
@@ -89,7 +103,11 @@ namespace TweakersRemake
 
 
         }
-
+        /// <summary>
+        /// Geeft alle links tussen een bepaald product en zijn uitgevers
+        /// </summary>
+        /// <param name="id">Product id</param>
+        /// <returns></returns>
         public static List<Product_Link> GetLinks(int id)
         {
             //Op basis van de id van de producten, Alle gelinkte waardes uit de database halen
@@ -131,7 +149,12 @@ namespace TweakersRemake
 
 
         }
-
+        /// <summary>
+        /// Geeft alle Product Reviews van een bepaalde product
+        /// </summary>
+        /// <param name="c">Product Catergorie</param>
+        /// <param name="id">Product id</param>
+        /// <returns></returns>
         public static List<Preview> GetPreviews(string c, int id)
         {
             List<Preview> list = new List<Preview>();
@@ -180,7 +203,12 @@ namespace TweakersRemake
             }
             return list;
         }
-
+        /// <summary>
+        /// Krijg de producten uit een bepaalde wenslijst
+        /// </summary>
+        /// <param name="Wenslijst"></param>
+        /// <param name="Profielnaam"></param>
+        /// <returns></returns>
         public static List<Product> GetProductsWenslijst(string Wenslijst, string Profielnaam)
         {
             List<Product> list = new List<Product>();
@@ -208,7 +236,11 @@ namespace TweakersRemake
             return list;
         }
 
-
+        /// <summary>
+        /// Geeft alle producten van een persoon die in zijn vergelijklijst staan
+        /// </summary>
+        /// <param name="Profielnaam"></param>
+        /// <returns></returns>
         public static List<Product> GetCompare(string Profielnaam)
         {// Alle Producten die een persoon in zijn Vergelijkingslijst heeft staan
             List<Product> list = new List<Product>();
@@ -234,6 +266,12 @@ namespace TweakersRemake
             }
             return list;
         }
+        /// <summary>
+        /// Voegt Wenslijst toe aan de user
+        /// </summary>
+        /// <param name="Profielnaam"></param>
+        /// <param name="Naam">Wenslijst Naam</param>
+        /// <returns></returns>
         public static bool AddWishlist(string Profielnaam, string Naam)
         {
             string str = "Insert into Wenslijst values(:Id , :Account , :Naam )";
@@ -253,7 +291,12 @@ namespace TweakersRemake
             }
             return false;
         }
-
+        /// <summary>
+        /// Voegt product toe aan vergelijkings lijst
+        /// </summary>
+        /// <param name="p">Te vergelijken Product</param>
+        /// <param name="profielnaam"></param>
+        /// <returns></returns>
         public static bool AddToCompare(Product p, string profielnaam)
         {
             string str = "Insert into Vergelijking values(:Id , :Account )";
@@ -272,7 +315,12 @@ namespace TweakersRemake
             }
             return false;
         }
-
+        /// <summary>
+        /// Checked of het product al aanwezig is in de lijst
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="profielnaam"></param>
+        /// <returns>False wanneer hij erin zit</returns>
         public static bool CheckCompare(Product p, string profielnaam)
         {
             //Ik check of de 
@@ -299,7 +347,12 @@ namespace TweakersRemake
         }
 
 
-
+        /// <summary>
+        /// Checked of het product al in de wenslijst bevind
+        /// </summary>
+        /// <param name="Wenslijst"></param>
+        /// <param name="Product"></param>
+        /// <returns>Zo ja returned false</returns>
         public static bool CheckWenslijst(int Wenslijst, int Product)
         {
             string str = "Select * From Wenslijst_Product where Product_ID = :p and Wenslijst_ID = :w ";
@@ -324,7 +377,12 @@ namespace TweakersRemake
             return true;
 
         }
-
+        /// <summary>
+        /// Voegt je product toe aan een bepaalde wenslijst
+        /// </summary>
+        /// <param name="Wenslijst"></param>
+        /// <param name="Product"></param>
+        /// <returns></returns>
         public static bool AddProductToWishlist(int Wenslijst, int Product)
         {
             if (CheckWenslijst(Wenslijst,Product))
@@ -347,7 +405,13 @@ namespace TweakersRemake
             return false;
            
         }
-
+        /// <summary>
+        /// Verwijderd product uit de beteffende wenslijst
+        /// </summary>
+        /// <param name="Wenslijst">Wenslijst Naam</param>
+        /// <param name="Product">Product id</param>
+        /// <param name="profielnaam"></param>
+        /// <returns></returns>
         public static bool RemoveProductFromWishList(string Wenslijst, int Product, string profielnaam)
         {
             Conn.Close();
@@ -369,7 +433,11 @@ namespace TweakersRemake
             }
             return false;
         }
-
+        /// <summary>
+        /// Lijst van alle wenslijsten van een user in een wenlijstviewmodel 
+        /// </summary>
+        /// <param name="profielnaam"></param>
+        /// <returns></returns>
         public static List<WenslijstViewModel> GetWenslijsten(string profielnaam)
         {
             List<WenslijstViewModel> list = new List<WenslijstViewModel>();
@@ -393,7 +461,11 @@ namespace TweakersRemake
 
 
         }
-
+        /// <summary>
+        /// Verwijder een wenslijst
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static bool RemoveWishList(int id)
         {
             string str = "delete from Wenslijst_Product where Wenslijst_ID = "+ id;
@@ -422,7 +494,11 @@ namespace TweakersRemake
         #endregion
 
 #region Account
-
+        /// <summary>
+        /// Geeft informatie van een account
+        /// </summary>
+        /// <param name="id">Account id</param>
+        /// <returns></returns>
         public static Account GetAccount(int id)
         {
             Account A = new Account();
@@ -454,7 +530,11 @@ namespace TweakersRemake
             return A;
 
         }
-
+        /// <summary>
+        /// Geeft het account id op basis van de profielnaam
+        /// </summary>
+        /// <param name="Naam">Profielnaam</param>
+        /// <returns></returns>
         public static int GetAccountId(string Naam)
         {
             int Nummer = 0;
@@ -482,7 +562,12 @@ namespace TweakersRemake
 
         }
 
-
+        /// <summary>
+        /// Checked of de combinatie voorkomt in de database
+        /// </summary>
+        /// <param name="profiel">Profielnaam</param>
+        /// <param name="wacht">Wachtwoord</param>
+        /// <returns></returns>
         public static bool Isvalid(string profiel, string wacht)
         {
             string str = "Select * From Acca where Profielnaam = :Naam and Wachtwoord = :wacht";
@@ -497,6 +582,7 @@ namespace TweakersRemake
                 command.Parameters.Add("Wacht", OracleDbType.Varchar2);
                 command.Parameters["Wacht"].Value = wacht;
                 OracleDataReader Data = command.ExecuteReader();
+                //Als er een waarde is gevonden returned true
                 if (Data.HasRows)
                 {
                     return true;
@@ -507,6 +593,11 @@ namespace TweakersRemake
             }
             return false;
         }
+        /// <summary>
+        /// Checked of de Profielnaam nog niet in gebruik is voordat je registreerd
+        /// </summary>
+        /// <param name="profiel"></param>
+        /// <returns></returns>
         public static bool Isvalid(string profiel)
         {
             string str = "Select * From Acca where Profielnaam = :Naam";
@@ -520,6 +611,7 @@ namespace TweakersRemake
                 command.Parameters["Naam"].Value = profiel;
                 
                 OracleDataReader Data = command.ExecuteReader();
+                //Als de naam voorkomt returned true
                 if (Data.HasRows)
                 {
                     return true;
@@ -530,7 +622,11 @@ namespace TweakersRemake
             }
             return false;
         }
-
+        /// <summary>
+        /// Checked Het account en registreerd deze
+        /// </summary>
+        /// <param name="A">Te registreren Account model</param>
+        /// <returns>Succes</returns>
         public static bool RegisterAccount(Account A)
         {
 
@@ -539,7 +635,7 @@ namespace TweakersRemake
                 "Insert into Acca Values(:id , :Naam , sysdate , :Geslacht , :Woonplaats , :Opleiding , :Profielnaam ,  Sysdate , Sysdate , :Wachtwoord )";
             try
             {
-                if (Openconnecion() && Database.Isvalid(A.ProfielNaam))
+                if (Openconnecion() && !Database.Isvalid(A.ProfielNaam))
                 {
                     
                     OracleCommand command = new OracleCommand(str);
@@ -577,6 +673,11 @@ namespace TweakersRemake
 
 
 #endregion
+        /// <summary>
+        /// Geeft de volgende vrije id uit een bepaalde table
+        /// </summary>
+        /// <param name="Table">Tabel naam</param>
+        /// <returns></returns>
         public static int GetNextID(string Table)
         {
             string str = "Select Max(ID) From " + Table;
@@ -607,6 +708,11 @@ namespace TweakersRemake
         }
 
 #region Posts 
+        /// <summary>
+        /// Krijg alle Hoofdposts uit een bepaalde map
+        /// </summary>
+        /// <param name="id">Map id</param>
+        /// <returns></returns>
         public static List<Post> GetPosts(int id)
         {
             List<Post> post = new List<Post>();
@@ -640,6 +746,12 @@ namespace TweakersRemake
             return post;
 
         }
+        /// <summary>
+        /// Verwijderd de ketting van een hoofdpost en zijn antwoorden
+        /// </summary>
+        /// <param name="mappy">Map id</param>
+        /// <param name="Onderwerp">Unieke Post onderwerp</param>
+        /// <returns></returns>
         public static bool DeleteChainPost(int mappy, string Onderwerp)
         {
             List<Post> post = new List<Post>();
@@ -671,6 +783,11 @@ namespace TweakersRemake
             return false;
 
         }
+        /// <summary>
+        /// Verwijderd een enkele post uit de database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static bool DeletePost(int id)
         {
             // Ik check eerst of de post een main post is, want anders moet alles verwijder worden in de post
@@ -714,7 +831,11 @@ namespace TweakersRemake
             return false;
 
         }
-
+        /// <summary>
+        /// Checked of de post een Hoofdpost is zo ja dan word deze verwijderd
+        /// </summary>
+        /// <param name="id">Post id</param>
+        /// <returns>Returns true wanneer de post verwijderd is</returns>
         public static bool CheckPost(int id)
         {
             Post post = new Post();
@@ -744,7 +865,11 @@ namespace TweakersRemake
             return false;
 
         }
-
+        /// <summary>
+        /// Geeft de post voor de betreffende post om een link te leggen
+        /// </summary>
+        /// <param name="id">Post id</param>
+        /// <returns></returns>
         public static int GetPrePost(int id)
         {
            
@@ -774,6 +899,11 @@ namespace TweakersRemake
             return 0;
 
         }
+        /// <summary>
+        /// Krijgt alle mappen uit een hoofdonderwerp
+        /// </summary>
+        /// <param name="Hoofdonderwerp"></param>
+        /// <returns></returns>
         public static List<Mappy> GetMappy(string Hoofdonderwerp)
         {
             List<Mappy> post = new List<Mappy>();
@@ -802,7 +932,11 @@ namespace TweakersRemake
             return post;
 
         }
-
+        /// <summary>
+        /// Krijgt alle posts uit een conversatie met dezelfde onderwerp
+        /// </summary>
+        /// <param name="Onderwerp">Post onderwerp</param>
+        /// <returns></returns>
         public static List<Post> GetChainPost(string Onderwerp)
         {
             //Alle posts Die in een conversatie zitten
@@ -839,7 +973,11 @@ namespace TweakersRemake
             return post;
 
         }
-
+        /// <summary>
+        /// Krijgt alle hoofdposts uit een bepaalde map
+        /// </summary>
+        /// <param name="id">Map id</param>
+        /// <returns></returns>
         public static List<Post> GetMainPosts(int id)
         {
             //Alle beginnende posts, dus die niet een antwoord zijn van een andere post
@@ -860,7 +998,12 @@ namespace TweakersRemake
 
             return List;
         }
-
+        /// <summary>
+        /// Voegt een hoofdpost toe
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="profielnaam"></param>
+        /// <returns></returns>
         public static bool AddPosts(Post post, string profielnaam)
         {
             
@@ -888,7 +1031,12 @@ namespace TweakersRemake
             return false;
 
         }
-
+        /// <summary>
+        /// Reageerd op een hoofdpost of een post
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="profielnaam"></param>
+        /// <returns></returns>
         public static bool ReactPosts(Post post, string profielnaam)
         {
 
