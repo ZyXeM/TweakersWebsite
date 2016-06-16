@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TweakersRemake.Models;
+using  TweakersRemake.Controllers;
+using System.Web.Mvc;
 
 namespace TweakersRemakeTest
 {
@@ -13,15 +15,23 @@ namespace TweakersRemakeTest
         [TestMethod]
         public void RemoveProduct()
         {
-            Product p = new Product ();
-          
+         ProductController p = new ProductController();
+            Product pr = new Product();
             
-           // Assert.AreEqual(,true);
+
+            //ViewResult v = p.RemoveProduct() as ViewResult;
+
+              
+            //Assert.AreEqual(,v.Model);
         }
 
         [TestMethod]
         public void AddProduct()
         {
+          
+            
+            
+
          //   Assert.AreEqual(, true);
         }
 

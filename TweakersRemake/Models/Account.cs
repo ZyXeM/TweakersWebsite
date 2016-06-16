@@ -20,7 +20,10 @@ namespace ASP.NET_MVC_Application.Models
         public DateTime Wijziging { get; set; }
 
         public string Wachtwoord { get; set; }
-
+        /// <summary>
+        /// Checked of dit profiel bestaat
+        /// </summary>
+        /// <returns></returns>
         public bool Isvalid()
         {
             if (Database.Isvalid(ProfielNaam, Wachtwoord))
@@ -29,7 +32,10 @@ namespace ASP.NET_MVC_Application.Models
             }
             return false;
         }
-
+        /// <summary>
+        /// Voegt dit profiel toe aan de database
+        /// </summary>
+        /// <returns></returns>
         public bool Register()
         {
             if (Database.RegisterAccount(this))

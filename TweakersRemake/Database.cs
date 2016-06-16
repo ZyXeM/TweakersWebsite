@@ -14,8 +14,7 @@ namespace TweakersRemake
 {
     public static class Database
     {
-        private static string Connection = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=fhictora01.fhict.local)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=fhictora)));User ID=dbi323425;PASSWORD=mmk55mmk100;";
-
+        private static string Connection = "Data Source=Localhost;User id=system;Password=mmk55mmk100;";
         private static OracleConnection Conn;
 
         /// <summary>

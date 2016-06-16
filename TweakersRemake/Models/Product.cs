@@ -18,11 +18,17 @@ namespace ASP.NET_MVC_Application.Models
 
         public List<Preview> Reviews { get; set; }
 
+        /// <summary>
+        /// Vult het product met alle links naar de uitgever
+        /// </summary>
         public void FillLink()
         {
             Links = Database.GetLinks(Id);
         }
 
+        /// <summary>
+        /// Vult het prduct met all zijn reviews
+        /// </summary>
         public void FillReview()
         {
             Reviews = Database.GetPreviews(Categorie, Id);
@@ -30,12 +36,21 @@ namespace ASP.NET_MVC_Application.Models
 
 
         }
-
+        /// <summary>
+        /// Voegt het product toe aan het compare lijst
+        /// </summary>
+        /// <param name="profielnaam"></param>
+        /// <returns></returns>
         public bool AddToCompare(string profielnaam)
         {
             return Database.AddToCompare(this, profielnaam);
         }
-
+        /// <summary>
+        /// Verwijderd het product uit het betreffende wenslijst
+        /// </summary>
+        /// <param name="profielnaam"></param>
+        /// <param name="Wenslijst">Wenslijst naam</param>
+        /// <returns></returns>
         public bool RemoveProduct(string profielnaam, string Wenslijst)
         {
             return Database.RemoveProductFromWishList(Wenslijst, Id, profielnaam);

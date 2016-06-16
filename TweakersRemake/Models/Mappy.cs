@@ -14,13 +14,20 @@ namespace TweakersRemake.Models
         public string Hoofdonderwerp { get; set; }
 
       public  List<Post> posts { get; set; }
-
+        /// <summary>
+        /// Krijgt alle hoofd posts
+        /// </summary>
+        /// <returns></returns>
         public bool GetMainPost()
         {
             posts = Database.GetPosts(Id);
             return true;
         }
-
+        /// <summary>
+        /// Krijgt alle gespreken die in deze map horen
+        /// </summary>
+        /// <param name="Onderwerp"></param>
+        /// <returns></returns>
         public bool GetChainPost(string Onderwerp)
         {
             posts = Database.GetChainPost(Onderwerp);

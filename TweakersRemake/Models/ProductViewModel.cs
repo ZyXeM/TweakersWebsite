@@ -12,6 +12,10 @@ namespace TweakersRemake.Models
 
         public List<WenslijstViewModel> Wenslijst { get; set; }
 
+        /// <summary>
+        /// Krijgt alle producten die vergerleken met elkaar moeten worden
+        /// </summary>
+        /// <param name="profielnaam"></param>
         public void GetCompare(string profielnaam)
         {
            Products =  Database.GetCompare(profielnaam);
